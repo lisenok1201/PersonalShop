@@ -15,6 +15,7 @@ def phone_button():
     builder.button(text='Отправьте Ваш номер телефона ☎️', request_contact=True)
     return builder.as_markup(resize_keyboard=True)
 
+
 def get_main_menu():
     """формирование кнопок меню"""
     builder = ReplyKeyboardBuilder()
@@ -24,6 +25,8 @@ def get_main_menu():
     builder.button(text="⚙️ Настройки")
     builder.adjust(1, 3)
     return builder.as_markup(resize_keyboard=True)
+
+
 
 def back_to_main_menu():
     '''Кнопка возврата главного меню'''
