@@ -50,7 +50,7 @@ def db_get_all_category():
     '''Получение списка категорий'''
     with get_session() as session:
         query = select(Categories)
-        return session.scalar(query).all()
+        return session.scalars(query).all()
 
 
 def db_get_finally_price(chat_id):

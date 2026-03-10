@@ -9,7 +9,7 @@ def generate_category_menu(chat_id):
     categories = db_get_all_category()
     total_price = db_get_finally_price(chat_id)
 
-    builder = InlineKeyboardBuilder
+    builder = InlineKeyboardBuilder()
     builder.button(
         text=f'Корзина заказа ({total_price if total_price else 0} рублей)',
         callback_data='Корзина заказа'
