@@ -86,7 +86,34 @@ def db_get_product(category_id):
 
 
 def db_get_product_by_id(product_id):
-    pass
+    """получение продукта по его id"""
+    with get_session() as session:
+        query = select(Products).where(Products.id==product_id)
+        return session.scalars(query)
 
-def db_get_user_cert(chat_id):
-    pass
+def db_get_user_cart(chat_id):
+    """получение корзины по ее id"""
+    with get_session() as session:
+        query = (
+            select(Carts).
+            join(Users, Carts.user_id == Users.id).
+            where(Users.telegram == chat_id)
+        )
+        return session.scalar()
+
+def db_add_or_update_item(
+            cart_id:int
+        ,product_id:int
+        ,product_name:str
+        ,product_price:DECIMAL
+        ,increment: int=0
+):
+    """добавляем или обновляем продукты корзины"""
+    try:
+        with get_session() as session:
+            item = (
+                session.query(FinallyCarts)
+                .filter_by(cart_id=cart_id, product_id= product_id)
+                .first()
+            )
+

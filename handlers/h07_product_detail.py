@@ -3,12 +3,12 @@ from aiogram.client import bot
 from aiogram.types import CallbackQuery
 
 
-from database.utils import db_get_product_by_id, db_get_user_cert
+from database.utils import db_get_product_by_id, db_get_user_cart
 
 router = Router()
 
 @router.callback_query(F.data.startwith('product_view_'))
-async def show_product_view_(callback: CallbackQuery):
+async def show_product_view_(callback: CallbackQuery, bot: Bot, user_cart=None):
     chat_id = callback.message.chat.id
     messages_id = callback.message.message_id
 
@@ -16,11 +16,11 @@ async def show_product_view_(callback: CallbackQuery):
 
     product_id=int(callback.data.split('_')[-1])
     product=db_get_product_by_id(product_id)
-    users_cart=db_get_user_cert(chat_id)
+    users_cart=db_get_user_cart(chat_id)
 
-
-
-
-
+    if user_cart :
+        db_add_or_update_item(
+            cart_id,product_id,product_name,product_price,increment: int=0
+        ):
 
 
