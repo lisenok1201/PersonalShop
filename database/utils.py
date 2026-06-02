@@ -101,32 +101,61 @@ def db_get_user_cart(chat_id):
         )
         return session.scalar()
 
+
 def db_add_or_update_item(
-            cart_id:int
-        ,product_id:int
-        ,product_name:str
-        ,product_price:DECIMAL
-        ,increment: int=0
+        cart_id: int,
+        product_id: int,
+        product_name: str,
+        product_price: DECIMAL,
+        increment: int = 0
 ):
-    """добавляем или изменяем количество товаров корзины"""
     try:
         with get_session() as session:
             item = (
                 session.query(FinallyCarts)
-                .filter_by(cart_id=cart_id, product_id= product_id)
+                .filter_by(cart_id=cart_id, product_id=product_id)
                 .first()
             )
+
             if item:
                 if increment != 0:
-                    item.quantity = max(1, item.quantity+increment)
+                    item.quantity = max(1, item.quantity + increment)
             else:
-                qty = 1 if increment <=0 else increment
+                qty = 1 if increment <= 0 else increment
                 item = FinallyCarts(
                     cart_id=cart_id,
                     product_id=product_id,
                     product_name=product_name,
                     quantity=qty,
-                    finally_price=0
+                    final_price=0
                 )
                 session.add(item)
-            item.finally_price = item.quantity + product_price
+
+            item.final_price = item.quantity * product_price
+
+            products_sum, total_products = session.query(
+                func.coalesce(func.sum(FinallyCarts.final_price), 0),
+                func.coalesce(func.sum(FinallyCarts.quantity), 0)
+            ).filter(
+                FinallyCarts.cart_id == cart_id
+            ).one()
+
+            session.query(Carts).filter(
+                Carts.id == cart_id
+            ).update({
+                Carts.total_price: products_sum,
+                Carts.total_products: total_products
+            })
+
+            session.commit()
+
+            return {
+                "status": "ok",
+                "total_price": float(products_sum),
+                "total_products": int(total_products),
+                "product_quantity": item.quantity
+            }
+
+    except Exception as e:
+        print(f"[db_add_or_update_item] Ошибка: {e}")
+        return {"status": "error"}
