@@ -24,7 +24,7 @@ def db_register_user(full_name, chat_id):
 
 
 def db_update_user(chat_id, phone):
-    ''' Изменение данных у пользователя, добавление номера телефона'''
+    """ Изменение данных у пользователя, добавление номера телефона"""
     with get_session() as session:
         query = update(Users).where(Users.telegram==chat_id).values(phone=phone)
         session.execute(query)
@@ -47,14 +47,14 @@ def db_create_user_cart(chat_id):
 
 
 def db_get_all_category():
-    '''Получение списка категорий'''
+    """ Получение списка категорий """
     with get_session() as session:
         query = select(Categories)
         return session.scalars(query).all()
 
 
 def db_get_finally_price(chat_id):
-    """Получение итоговой cуммы"""
+    """ Получение итоговой cуммы """
 
     with get_session() as session:
         query = select(func.sum(FinallyCarts.final_price)).select_from(
@@ -78,7 +78,7 @@ def db_get_last_orders(chat_id, limit=5):
         return session.scalars(query).all()
 
 def db_get_product(category_id):
-    '''получениие продукта по id категории'''
+    """ получениие продукта по id категории """
 
     with get_session() as session:
         query = select(Products).where(Products.category_id==category_id)
@@ -108,7 +108,7 @@ def db_add_or_update_item(
         ,product_price:DECIMAL
         ,increment: int=0
 ):
-    """добавляем или обновляем продукты корзины"""
+    """добавляем или изменяем количество товаров корзины"""
     try:
         with get_session() as session:
             item = (
@@ -116,4 +116,17 @@ def db_add_or_update_item(
                 .filter_by(cart_id=cart_id, product_id= product_id)
                 .first()
             )
-
+            if item:
+                if increment != 0:
+                    item.quantity = max(1, item.quantity+increment)
+            else:
+                qty = 1 if increment <=0 else increment
+                item = FinallyCarts(
+                    cart_id=cart_id,
+                    product_id=product_id,
+                    product_name=product_name,
+                    quantity=qty,
+                    finally_price=0
+                )
+                session.add(item)
+            item.finally_price = item.quantity + product_price

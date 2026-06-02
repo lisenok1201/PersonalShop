@@ -1,9 +1,9 @@
 from aiogram import Router, F, Bot
 from aiogram.client import bot
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, FSInputFile
 
-
-from database.utils import db_get_product_by_id, db_get_user_cart
+from bot_utils.message_caption import text_for_caption
+from database.utils import db_get_product_by_id, db_get_user_cart, db_add_or_update_item
 
 router = Router()
 
@@ -20,7 +20,25 @@ async def show_product_view_(callback: CallbackQuery, bot: Bot, user_cart=None):
 
     if user_cart :
         db_add_or_update_item(
-            cart_id,product_id,product_name,product_price,increment: int=0
-        ):
+            cart_id=user_cart.id,
+            product_id=product.id,
+            product_name=product.product_name,
+            product_price=product.price,
+            increment=1
+        )
 
+        caption=text_for_caption(
+            name=product.product_name,
+            description=product.description,
+            base_price=float[product.price]
+        )
 
+        product_image = FSInputFile(path=product.image)
+
+        await bot.send_photo(
+            chat_id=chat_id,
+            photo=product_image,
+            caption = caption,
+        )
+    else:
+        await ask_for_phone(chat_id, bot)
