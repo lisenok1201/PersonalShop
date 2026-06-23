@@ -1,7 +1,9 @@
 from aiogram import Router, F, Bot
-from aiogram.types import CallbackQuery, FSInputFile
+from aiogram.types import CallbackQuery, FSInputFile, InputMediaPhoto
 
+from bot_utils.message_caption import text_for_caption
 from database.utils import db_get_product_by_name, db_get_user_cart, db_add_or_update_item
+from keyboards.inline import quantity_cart_controls
 
 router = Router()
 
@@ -32,4 +34,17 @@ async def change_product_quantity(callback: CallbackQuery, bot: Bot):
     caption = text_for_caption(name= product.product_name,
                                description=product.description,
                                base_price=float(product.price)*result['product_quantity'])
+
+    await bot.edit_message_media(
+        chat_id=chat_id,
+        message_id=message_id,
+        media=InputMediaPhoto(
+            media=FSInputFile(path=product.image),
+            caption=caption,
+            parse_mode="HTML"
+        ),
+        reply_markup=quantity_cart_controls(result("product_quantity"))
+    )
+    except TelegramBadRequest:
+    pass
 
