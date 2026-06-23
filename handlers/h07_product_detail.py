@@ -1,5 +1,5 @@
 from aiogram import Router, F, Bot
-from aiogram.types import CallbackQuery, FSInputFile, message_id
+from aiogram.types import CallbackQuery, FSInputFile
 
 from bot_utils.message_caption import text_for_caption
 from database.utils import db_get_product_by_id, db_get_user_cart, db_add_or_update_item, db_get_all_category
@@ -54,7 +54,7 @@ async def ask_for_phone(chat_id: int, bot: Bot):
 async  def handle_back_to_category(callback: CallbackQuery, bot: Bot):
     """возврат из просмотра информации к категории"""
     chat_id = callback.message.chat.id
-    messages_id = callback.message.message_id
+    message_id = callback.message.message_id
 
     try:
         await bot.delete_message(chat_id = chat_id, message_id = message_id)
@@ -67,5 +67,6 @@ async  def handle_back_to_category(callback: CallbackQuery, bot: Bot):
         return
 
     keyboard = generate_category_menu(chat_id)
-    await bot.send_message(chat_id = chat_id,text = 'выберити категорию', reply_markup=keyboard)
+    await bot.send_message(chat_id = chat_id,text = 'нажми категорию', reply_markup=keyboard)
     await callback.answer()
+
