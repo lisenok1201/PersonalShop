@@ -1,4 +1,5 @@
 from aiogram import Router, F, Bot
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.types import CallbackQuery, FSInputFile, InputMediaPhoto
 
 from bot_utils.message_caption import text_for_caption
@@ -35,16 +36,17 @@ async def change_product_quantity(callback: CallbackQuery, bot: Bot):
                                description=product.description,
                                base_price=float(product.price)*result['product_quantity'])
 
-    await bot.edit_message_media(
-        chat_id=chat_id,
-        message_id=message_id,
-        media=InputMediaPhoto(
-            media=FSInputFile(path=product.image),
-            caption=caption,
-            parse_mode="HTML"
-        ),
-        reply_markup=quantity_cart_controls(result("product_quantity"))
-    )
+    try:
+        await bot.edit_message_media(
+            chat_id=chat_id,
+            message_id=message_id,
+            media=InputMediaPhoto(
+                media=FSInputFile(path=product.image),
+                caption=caption,
+                parse_mode="HTML"
+            ),
+            reply_markup=quantity_cart_controls(result("product_quantity"))
+        )
     except TelegramBadRequest:
-    pass
+        pass
 
