@@ -2,6 +2,7 @@ from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 
 from database.utils import db_get_cart_items
+from keyboards.inline import cart_actions_kb
 
 router = Router()
 
@@ -16,15 +17,6 @@ async def open_cart(callback: CallbackQuery):
     """Демонстрация 2: корзины с помощью inline кнопок"""
     await show_cart(chat_id = callback.from_user.id, send_fn = callback.message.answer)
     await callback.answer()
-
-
-
-
-
-
-
-
-
 
 
 async def show_cart(chat_id, send_fn):

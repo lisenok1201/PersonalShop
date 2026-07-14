@@ -172,4 +172,21 @@ def db_get_product_by_name(product_name):
 
 
 def db_get_cart_items(chat_id):
-    pass
+    """Получение товаров из финальной корзины"""
+    with get_session() as session:
+        items=(session.query(FinallyCarts)
+               .join(Carts, FinallyCarts.cart_id == Carts.id)
+               .join(Users, Users.id == Carts.user_id)
+               .filter(Users.telegram == chat_id)
+               .all()
+               )
+        result=[]
+        for item in items:
+            result.append({
+                'product_id': item.product_id,
+                'product_name': item.product_name,
+                'quantity': item.quantity,
+                'final_price': float(item.final_price)
+            })
+        return result
+
