@@ -30,7 +30,7 @@ async def show_cart(chat_id, send_fn):
     for item in cart_items:
         total = float(item['final_price'])+total
         text+=f'{item['product_name']} {item['quantity']} шт {item["finaly_price"]} руб \n'
-    text+=f'\nитого: {total:.2f} руб'
+    text+=f'\nИтог: {total:.2f} руб'
     await send_fn(text, reply_markup = cart_actions_kb())
 
 
