@@ -6,3 +6,4 @@ def text_for_caption(name, description, base_price):
         f"<b>цена :{float(base_price):.2f} ₽</b>\n"
     )
     return text
+
