@@ -197,5 +197,13 @@ def db_get_user_phone(chat_id):
         query = select(Users.phone).where(Users.telegram == chat_id)
         return session.execute(query).fetchone()[0]
 
+def db_save_order_histore(chat_id):
+    pass
 
 
+
+
+
+
+def db_clean_fanal_cart(chat_id):
+    pass
