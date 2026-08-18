@@ -197,13 +197,32 @@ def db_get_user_phone(chat_id):
         query = select(Users.phone).where(Users.telegram == chat_id)
         return session.execute(query).fetchone()[0]
 
-def db_save_order_histore(chat_id):
-    pass
+
+def db_save_order_history(chat_id):
+    """сохранение истории заказов"""
+    cart = db_get_user_cart(chat_id)
+    if not cart:
+        return
+    with get_session() as session:
+        final_items = session.query(FinallyCarts).filter_by(cart_id=cart.id).all()
+
+        for item in final_items:
+            session.add(
+                Orders(
+                    cart_id=cart.id,
+                    product_name=item.product_name,
+                    quantity=item.quantity,
+                    final_price=item.final_price
+                )
+            )
+        session.commit()
 
 
+def db_clean_final_cart(chat_id):
+    """очистка корзины после покупки"""
 
-
-
-
-def db_clean_fanal_cart(chat_id):
-    pass
+    cart = db_get_user_cart(chat_id)
+    if not cart:
+        return
+    with get_session() as session:
+        query = delete(FinallyCarts).where(FinallyCarts.carts_id == cart.id)

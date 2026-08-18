@@ -2,7 +2,7 @@ from aiogram import Router, F, Bot
 from aiogram.types import CallbackQuery
 
 from bot_utils.counting_products import counting_products_from_cart
-from database.utils import db_get_user_phone, db_save_order_histore, db_clean_fanal_cart
+from database.utils import db_get_user_phone, db_clean_final_cart, db_save_order_history
 from config import MANAGER
 
 router = Router()
@@ -32,8 +32,8 @@ async def confirm_order (callback: CallbackQuery, bot: Bot):
 
     await bot.send_message(MANAGER, text, parse_mode = 'HTML')
 
-    db_save_order_histore(user.id)
-    db_clean_fanal_cart(callback.from_user.id)
+    db_save_order_history(user.id)
+    db_clean_final_cart(callback.from_user.id)
 
     await callback.massage.edit_text('Заказ принят.Ожидайте обратной связи')
     await callback.answer('Заказ принят')
