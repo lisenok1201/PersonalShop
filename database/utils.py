@@ -226,3 +226,25 @@ def db_clean_final_cart(chat_id):
         return
     with get_session() as session:
         query = delete(FinallyCarts).where(FinallyCarts.carts_id == cart.id)
+        session.execute(query)
+        session.commit()
+
+
+
+
+def db_decrease_product_quantity(finale_cart_id):
+    '''уменьшение количества товара в корзине'''
+    with get_session()as session:
+        item = session.execute(select(FinallyCarts).where(FinallyCarts.cart_id == finally_cart_id)).scalar_one_or_none()
+        if not item:
+            return False
+        product = session.execute(select(Products).where(Products.id == item.product_id))
+        if not product:
+            return False
+        item.quantity -=1
+        if item.quantity <= 0:
+            session.delete(item)
+        else:
+            item.final_price = float(product.price) * item.quntity
+        session.commit()
+        return True

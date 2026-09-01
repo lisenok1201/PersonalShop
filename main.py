@@ -4,7 +4,8 @@ from aiogram import Bot, Dispatcher
 from config import TOKEN
 from handlers import (h01_start, h02_getcontact, h03_order, h04_history,
                       h05_categories, h06_navigation, h07_product_detail,
-                      h08_cart_quantity, h09_add_to_cart, h10_open_cart, h11_confirm_order)
+                      h08_cart_quantity, h09_add_to_cart, h10_open_cart, h11_confirm_order,
+                      h12_cart_modify)
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
@@ -20,6 +21,8 @@ dp.include_router(h08_cart_quantity.router)
 dp.include_router(h09_add_to_cart.router)
 dp.include_router(h10_open_cart.router)
 dp.include_router(h11_confirm_order.router)
+dp.include_router(h12_cart_modify.router)
+
 
 
 
