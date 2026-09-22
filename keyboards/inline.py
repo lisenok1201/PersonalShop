@@ -54,3 +54,40 @@ def cart_actions_kb():
     )
     builder.adjust(1,2)
     return builder.as_markup()
+
+
+def get_settings_menu():
+    """меню настроек"""
+    builder = InlineKeyboardBuilder()
+    builder.button(text='Сменить язык', callback_data='change_language')
+    builder.button(text='удалить аккаунт', callback_data='delete_account')
+    builder.button(text='🍉🍉🍉Сменить язык🍉🍉🍉', callback_data='change_language')
+    builder.button(text='🍉🍉🍉удалить аккаунт🍉🍉🍉', callback_data='delete_account')
+    if MANAGER_ID:
+        builder.button(text='связаться с менеджером 🍉', url=f'tg://user?id={MANAGER_ID}')
+        builder.button(text='🍉🍉🍉связаться с менеджером🍉🍉🍉', url=f'tg://user?id={MANAGER_ID}')
+    builder.button(text='⬅️ Назад', callback_data='back_to_menu')
+    builder.adjust(1)
+    return builder.as_markup()
+
+def get_language_keyboard():
+    '''меню выбора языка'''
+    builder = InlineKeyboardBuilder()
+    builder.button(text='🇷🇺 Русский', callback_data='lang_ru')
+    builder.button(text='🇺🇸 English', callback_data='lang_en')
+    builder.button(text='⬅️ Назад', callback_data='settings_menu')
+    builder.adjust(1)
+    return builder.as_markup()
+
+
+def delete_confirm_kb():
+    builder = InlineKeyboardBuilder()
+    builder.button(text='Удалить✔',callback_data= "confirm_delete")
+    builder.button(text='Отмена🧠',callback_data= "settings_menu")
+    builder.adjust(1)
+    return builder.as_markup()
+
+
+
+
+

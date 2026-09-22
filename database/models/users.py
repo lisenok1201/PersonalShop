@@ -1,16 +1,17 @@
 from sqlalchemy import BigInteger, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from database.base import Base
-
+'''модель для пользователя'''
 class Users(Base):
-    __tablename__ ='users'# название класса в базе данных
-    id: Mapped[int] = mapped_column(primary_key=True) # уникальный номер для таблиц(первичный ключ)
-    name: Mapped[str] = mapped_column(String(70))#
-    telegram: Mapped[int] = mapped_column(BigInteger, unique=True)#
-    phone: Mapped[str] = mapped_column(String, nullable=True)#
-    language: Mapped[str] = mapped_column(String(10), default="ru")#
+    __tablename__ = 'users'
 
-    carts: Mapped[int] = relationship("Carts", back_populates='user_cart')#
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(70))
+    telegram: Mapped[int] = mapped_column(BigInteger, unique=True)
+    phone: Mapped[str] = mapped_column(String(20), nullable=True)
+    language: Mapped[str] = mapped_column(String(5), default='ru')
 
-    def __str__(self):
+    carts: Mapped[int] = relationship("Carts", back_populates="user_cart")
+
+    def str(self):
         return self.name

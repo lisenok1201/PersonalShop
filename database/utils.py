@@ -1,3 +1,4 @@
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 from sqlalchemy.orm import Session
 from sqlalchemy import update, delete, select, DECIMAL, join, func
 from sqlalchemy.exc import IntegrityError
@@ -231,20 +232,57 @@ def db_clean_final_cart(chat_id):
 
 
 
+def db_update_language(telegram_id, language):
+    '''🍉🍉🍉обновление языка пользователя в базе данных🍉🍉🍉'''
+    with get_session() as session:
+        session.execute(update(Users).where(Users.telegram == telegram_id).values(language=language))
+        session.commit()
 
-def db_decrease_product_quantity(finale_cart_id):
-    '''уменьшение количества товара в корзине'''
-    with get_session()as session:
+
+
+def db_get_product_for_delete(chat_id):
+    '''удаление товаров из корзины'''
+    with get_session() as session:
+        query = (
+            select(FinallyCarts.id, FinallyCarts.product_name)
+            .join(Carts, FinallyCarts.cart_id == Carts.id)
+            .join(Users, Carts.user_id == Users.id)
+            .where(Users.telegram == chat_id)
+        )
+        return session.execute(query).fetchall()
+
+
+def db_increase_product_quantity(finally_cart_id):
+    ''''увеличение количества товара в корзине'''
+    with get_session() as session:
         item = session.execute(select(FinallyCarts).where(FinallyCarts.cart_id == finally_cart_id)).scalar_one_or_none()
         if not item:
             return False
-        product = session.execute(select(Products).where(Products.id == item.product_id))
+        product = session.execute(select(Products).where(Products.id == item.product_id)).scalar_one_or_none()
         if not product:
             return False
-        item.quantity -=1
+
+        item.quantity += 1
+        item.final_price = float(product.price) * item.quantity
+
+        session.commit()
+        return True
+
+
+def db_decrease_product_quantity(finally_cart_id):
+    '''уменьшение количества товара в корзине'''
+    with get_session() as session:
+        query = delete(FinallyCarts).where(FinallyCarts.carts_id == cart.id)
+        item = session.execute(select(FinallyCarts).where(FinallyCarts.cart_id == finally_cart_id)).scalar_one_or_none()
+        if not item:
+            return False
+        product = session.execute(select(Products).where(Products.id == item.product_id)).scalar_one_or_none()
+        if not product:
+            return False
+        item.quantity -= 1
         if item.quantity <= 0:
             session.delete(item)
         else:
-            item.final_price = float(product.price) * item.quntity
+            item.final_price = float(product.price) * item.quantity
         session.commit()
         return True

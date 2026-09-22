@@ -40,3 +40,4 @@ def back_arrow():
     builder = ReplyKeyboardBuilder()
     builder.button(text="Назад ⬅️")
     return builder.as_markup(resize_keyboard=True)
+
