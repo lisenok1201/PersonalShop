@@ -291,7 +291,7 @@ def db_decrease_product_quantity(finally_cart_id):
 def db_delet_user_by_telegram_id(cgat_id):
     try:
         with get_session() as session:
-            user = session.scalar(select(Users).where(Users.telegram == chat_id))
+            user = session.scalar(select(Users).where(Users.telegram == cgat_id))
             if not user:
                 return False
 
