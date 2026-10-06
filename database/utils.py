@@ -286,3 +286,24 @@ def db_decrease_product_quantity(finally_cart_id):
             item.final_price = float(product.price) * item.quantity
         session.commit()
         return True
+
+
+def db_delet_user_by_telegram_id(cgat_id):
+    try:
+        with get_session() as session:
+            user = session.scalar(select(Users).where(Users.telegram == chat_id))
+            if not user:
+                return False
+
+            cart = session.scalar(select(Carts).where(Carts.user_id==user.id))
+            if cart:
+                session.execute(delete(Orders).where(Orders.cart_id==cart.id))
+                session.execute(delete(FinallyCarts).where(FinallyCarts.cart_id == cart.id))
+                session.execute(delete(Carts).where(Carts.id == cart.id))
+            session.execute(delete(Users).where(Users.id == user.id))
+            session.commit()
+    except Exception as e:
+        print('Ошибка при удалении пользователя:',e)
+        return False
+
+
