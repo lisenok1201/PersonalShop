@@ -18,3 +18,6 @@ pytest_cache/
 
 media/*
 !media/.gitkeep
+
+*.sqlite3
+
