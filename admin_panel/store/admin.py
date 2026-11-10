@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Users, Categories
+from .models import Users, Categories, Products
+
 
 @admin.register(Users)
 class UsersAdmin(admin.ModelAdmin):
@@ -15,7 +16,17 @@ class CategoriesAdmin(admin.ModelAdmin):
     )
     search_fields = ("category_name",)
 
+@admin.register(Products)
+class ProductsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'product_name','category', 'display_price')
+    list_filter = ("category",)
+    list_per_page = 10
+    search_fields = ("product_name", "category")
+    ordering = ("product_name",)
 
+    @admin.display(description='Стоимость')
+    def display_price(self,obj):
+        return f'{obj.price:.2f} руб'
 
 
 

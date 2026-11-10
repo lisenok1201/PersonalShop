@@ -16,6 +16,8 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
+    'jazzmin',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -81,9 +83,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -96,3 +98,20 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+JAZZMIN_SETTINGS = {
+    'site_title': 'Store',
+    'site_header': 'Панель управления',
+    'site_brand': 'Stort',
+    'welcome_sign': 'Добро пожаловать в нащ магазин',
+
+    'search_model': ['store.Users', 'store.Products'],
+
+    'topmenu_links': [{
+        'name': 'Главная'
+    },],
+    'icons': {'store.Users': 'fas fa-User',
+              'store.Products': 'fas fa-cookie',
+              'store.Orders': 'fas fa-tag'}
+}
+
