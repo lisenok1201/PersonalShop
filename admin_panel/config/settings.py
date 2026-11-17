@@ -2,14 +2,11 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 PROJECT_ROOT = BASE_DIR.parent
-
 load_dotenv(PROJECT_ROOT /".env")
 
-SECRET_KEY = 'django-insecure-iq&e)cn)=t6&)kfhvn&odt2yzaenx%+r=t5t#e&#o**55_=yah'
+SECRET_KEY = os.getenv('DJANDO_SECRET_KEY')
 
 DEBUG = True
 
@@ -104,14 +101,46 @@ JAZZMIN_SETTINGS = {
     'site_header': 'Панель управления',
     'site_brand': 'Stort',
     'welcome_sign': 'Добро пожаловать в нащ магазин',
+    'custom_css': 'css/custom_admin.css',
 
     'search_model': ['store.Users', 'store.Products'],
+    'copyright': 'store',
 
     'topmenu_links': [{
         'name': 'Главная'
-    },],
+    },
+        {
+            'name': 'Google',
+            'url': 'https://google.com',
+            'new_window': True,
+        }],
     'icons': {'store.Users': 'fas fa-User',
               'store.Products': 'fas fa-cookie',
-              'store.Orders': 'fas fa-tag'}
+              'store.Orders': 'fas fa-tag'},
+    'show_sidebar': True,
+    'navigation_expanded': True,
+    'hide_apps': [],
+
+
+    'order_with_respect_to': ['store','auth'],
+
 }
+
+JAZZMIN_UI_TWEAKS = {
+    'theme': 'solar',
+    'navbar_small_text': True,
+    'footer_small_text': True,
+    'body_small_text': True,
+    'brand_color': 'navbar-dark-primary',
+    'accent': 'accent-warning',
+
+    'navbar': 'navbar-dark navbar-primary navbar-shadow',
+    'no_navbar_border': True,
+    'sidebar': 'sidebar-dark-primary',
+    'side_nav_small_text': True,
+
+}
+
+
+
 
